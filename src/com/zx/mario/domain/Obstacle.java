@@ -64,6 +64,10 @@ public class Obstacle extends GameObject{
     public static Obstacle newTowerInstance(int x, int y){
         return new Obstacle(x, y, 1, 0, "tower", 0, ObstacleType.gan);
     }
+    //隐藏的方块
+    public static Obstacle newHiddenBrickInstance(int x, int y){
+        return new Obstacle(x, y, 1, 0, "hiddenBrick", 0, ObstacleType.hiddenBrick);
+    }
     public Obstacle(int x, int y, int imgSize, int speed, String filePrefix, int currentImgIndex, ObstacleType type) {
         super(x, y, imgSize, speed, filePrefix, currentImgIndex);
         this.type = type;

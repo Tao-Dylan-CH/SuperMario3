@@ -320,6 +320,17 @@ public class Mario extends GameObject {
                 || status == Status.hero_R_stand || status == Status.hero_L_stand;
     }
 
+    public boolean isStandL(){
+        return status == Status.s_mario_stand_L
+                || status == Status.mario_L_stand
+                || status == Status.hero_L_stand;
+    }
+    public boolean isStandR(){
+        return status == Status.s_mario_stand_R
+                || status == Status.mario_R_stand
+                || status == Status.hero_R_stand;
+    }
+
     /**
      * 判定是否是向右跑
      * @return
@@ -569,6 +580,10 @@ public class Mario extends GameObject {
     public void lose(){
         gameWindow.loseGame();
     }
+    public void regretfulLose(){
+        lose();
+        gameWindow.setRegretfulLose(true);
+    }
     //碰撞检测
     public void checkMove(List<Obstacle> obstacles){
         boolean canLeft1 = true, canRight1 = true, onObstacle1 = false;
@@ -623,7 +638,7 @@ public class Mario extends GameObject {
                 if(obstacle.getType() == ObstacleType.pit){
                     if(x > obstacle.x - offset2 && x + width < obstacle.x + obstacle.width + offset2){
                         System.out.println("坠落");
-                        lose();
+                        regretfulLose();
                     }
                 }
             }
@@ -687,6 +702,14 @@ public class Mario extends GameObject {
                         gameWindow.getScore(getGoldScore);
                         gameWindow.getGold();
                     }
+                }else if(obstacle.getType() == ObstacleType.hiddenBrick){
+                    //更改状态
+                    obstacle.update(1, "nothing", ObstacleType.noting);
+                    //播放音效
+                    MusicService.playGameSound("power_up.wav");
+                    Obstacle mushroom = MobileGainProp.newMushroomInstance(obstacle.x, obstacle.y, 2);
+                    mushroom.setX(obstacle.x + (obstacle.width - mushroom.width) / 2);
+                    gameWindow.getGainProps().add(mushroom);
                 }else{
                     //播放音效
                     MusicService.playGameSound("bump.wav");
@@ -726,6 +749,9 @@ public class Mario extends GameObject {
                         //对话框
                         if(gameWindow.getDialogForMario() == null)
                             gameWindow.setDialogForMario(GameDialog.newBeBiggerDialogInstanceForMario());
+                    }else if(obstacle.getType() == ObstacleType.mushroom1){
+                        ((MobileGainProp)obstacle).die();
+                        System.out.println("Life up...");
                     }else if(obstacle.getType() == ObstacleType.star){  //星星
                         //播放音效
                         MusicService.playGameSound("power_up_appears.wav");
@@ -815,17 +841,18 @@ public class Mario extends GameObject {
                     MusicService.playGameSound("stomp.wav");
                     if(!enemy.isShell){
                         setUpTime(3);
+                        //变龟壳
                         enemy.update(1, "shell0", true);
                         //对话框
                         if(gameWindow.getDialogForMario() == null)
                             gameWindow.setDialogForMario(GameDialog.newTreadDialogInstanceForMario());
                     }else{
-                        setUpTime(4);
-                        enemy.die();
+                        enemy.setSpeed(0);
+                        enemy.setDuration(shellDuration);
                     }
                 }else{  //食人花
                     if(isHarmEnemyStatus){
-                        System.out.println("无敌状态!");
+//                        System.out.println("无敌状态!");
                         enemy.die();
                     }else if(isInvincible){
                         System.out.println("不受伤害状态！");
@@ -839,14 +866,16 @@ public class Mario extends GameObject {
                 }
             } else if (MathUtil.checkTheCollision(this, enemy)) {   //撞到敌人
                 if(isHarmEnemyStatus){
-                    System.out.println("无敌状态!");
+//                    System.out.println("无敌状态!");
                     enemy.die();
-                }else if(isInvincible){
-                    System.out.println("不受伤害状态！");
-                }else{
+                }else if(!isInvincible){
                     if(enemy.getType() == EnemyType.tortoise){
                         if(enemy.isShell){
-                            System.out.println("龟壳！");
+//                            System.out.println("龟壳！");
+                            enemy.setSpeed(10);
+                            //不再变乌龟
+                            enemy.setDuration(Integer.MAX_VALUE);
+                            enemy.setToRight(x <= enemy.getX());
                         }else{
                             beAttacked();
                         }

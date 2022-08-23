@@ -102,7 +102,7 @@ public class Application {
     //蘑菇死亡显示图片控制
     public static final int fungusDuration = 3;
     //乌龟被踩后恢复控制
-    public static  final int shellDuration = 70;
+    public static  final int shellDuration = 100;
     //乌龟被踩前后的y坐标变化
     public static final int tortoiseGap = 12;
     //马里奥无敌时间

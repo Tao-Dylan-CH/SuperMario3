@@ -16,7 +16,13 @@ public class MobileGainProp extends Obstacle implements Runnable{
     }
 
     public static MobileGainProp newMushroomInstance(int x, int y, int type){
-        return new MobileGainProp(x, y, 1, 3, "mushroom" + type, 0, ObstacleType.mushroom);
+        ObstacleType obstacleType;
+        if(type == 1){
+            obstacleType = ObstacleType.mushroom;
+        }else{
+            obstacleType = ObstacleType.mushroom1;
+        }
+        return new MobileGainProp(x, y, 1, 3, "mushroom" + type, 0, obstacleType);
     }
     public static MobileGainProp newStarInstance(int x, int y){
         return new MobileGainProp(x, y, 1, 3, "star", 0, ObstacleType.star);

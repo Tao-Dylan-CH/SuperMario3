@@ -8,6 +8,7 @@ package com.zx.mario.domain;
  */
 public enum ObstacleType {
     mushroom,   //蘑菇
+    mushroom1,  //加命蘑菇
     star,       //星星
     flower,     //花
     box,    //未知方块
@@ -21,5 +22,6 @@ public enum ObstacleType {
     pipe,       //水管
     shell,       //龟壳
     pit,          //坑
-    tower        //城堡
+    tower,        //城堡
+    hiddenBrick     //隐形方块
 }

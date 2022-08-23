@@ -67,9 +67,9 @@ public class Enemy extends GameObject {
         this.filePrefix = filePrefix;
         if(toShell){
             isShell = true;
-            System.out.println(y);
+//            System.out.println(y);
             y += Application.tortoiseGap;
-            System.out.println(y);
+//            System.out.println(y);
             speed = 0;
         }else{
             isShell = false;
@@ -168,7 +168,7 @@ public class Enemy extends GameObject {
             }
         }
 //        出左边窗口移除
-        if(x < -width){
+        if(x < -width || (isShell && x > Application.WindowWidth)){
             isLive = false;
 //            System.out.println("敌人失效！");
         }

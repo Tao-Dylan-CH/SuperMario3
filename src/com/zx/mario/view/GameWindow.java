@@ -55,6 +55,8 @@ public class GameWindow extends JFrame implements Runnable {
     //标头金币
     private GameObject gold = SpecialProp.newStaticGoldInstance(250, 65);
     private int goldCount = 0;
+    //判断是否是因为踩空死亡
+    private boolean isRegretfulLose = false;
     public GameWindow() {
         //标题
         this.setTitle(MessageService.getTextByLanguage("menuTitle"));
@@ -192,11 +194,13 @@ public class GameWindow extends JFrame implements Runnable {
                 }
                 //加速
                 if(keyCode == KeyEvent.VK_B){
-                    if(mario.getSpeed() != 0){
-                        mario.setSpeed(moveSpeed * 2);
-                    }
-                    else{
-                        mountain.setSpeed(moveSpeed * 2);
+                    if(mario.getHeroType() == HeroType.FireMario){
+                        if(mario.getSpeed() != 0){
+                            mario.setSpeed(moveSpeed * 2);
+                        }
+                        else{
+                            mountain.setSpeed(moveSpeed * 2);
+                        }
                     }
 //                    mario.setJumpSpeed(jumpSpeed * 2);
                 }
@@ -406,7 +410,7 @@ public class GameWindow extends JFrame implements Runnable {
         x += 100;
         for(int i = 0; i < 3; i++){
             x += i * 50;
-            enemy = Enemy.newFungusInstance(x, 426);
+            enemy = Enemy.newTortoiseInstance(x, 426);
             enemies.add(enemy);
         }
 
@@ -418,6 +422,8 @@ public class GameWindow extends JFrame implements Runnable {
         obstacle = Obstacle.newPitInstance(x, gameGrassY);
         obstacles.add(obstacle);
 
+        //隐形方块（加命）
+        obstacles.add(Obstacle.newHiddenBrickInstance(x - 100, y));
         //三个砖块，中间是问号方块
         x += 200;
         for(int i = 0; i < 3; i++){
@@ -798,6 +804,42 @@ public class GameWindow extends JFrame implements Runnable {
             }
         }
     }
+    private void checkShellHitObject(){
+        for(Enemy enemy : enemies){
+            if(enemy.getType() == EnemyType.tortoise && enemy.isShell){
+
+                //玛丽奥和龟壳
+                if(enemy.getSpeed() != 0 && !mario.isInvincible() && !mario.isHarmEnemyStatus() && MathUtil.checkTheCollision(mario, enemy)){
+                    if(!mario.isJump()){        //解决踩龟壳受伤的问题
+                        mario.beAttacked();
+                        //被乌龟撞起的效果
+                        mario.setUpTime(10);
+                        if(mario.isStandL()){
+                            mario.updateJumpL();
+                        }else if(mario.isStandR()){
+                            mario.updateJumpR();
+                        }
+                    }
+                }else if(mario.isHarmEnemyStatus()){
+                    enemy.die();
+                }
+                //龟壳和其他生物
+                for(Enemy enemy1: enemies){
+                    //去除自身
+                    if(enemy1 != enemy){
+                        if(enemy.getSpeed() != 0 && MathUtil.checkTheCollision(enemy1, enemy)){
+                            enemy1.die();
+                            if(enemy1.getType() == EnemyType.tortoise){
+                                score += beatEnemy * 2;
+                            }else{
+                                score += beatEnemy;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public void winGame(){
         isGameEnd = true;
@@ -859,6 +901,8 @@ public class GameWindow extends JFrame implements Runnable {
 
             //子弹击中物体的检测
             checkBulletHitObject();
+            //龟壳移动检测
+            checkShellHitObject();
             //检测是否到达终点
             if(!isGameEnd){
                 mario.checkWin();
@@ -911,11 +955,13 @@ public class GameWindow extends JFrame implements Runnable {
                             }
                         }
                     }else{
-                        if(!mario.getFilePrefix().equals("s_mario_die")){
-                            mario.setImgSize(1);
-                            mario.setFilePrefix("s_mario_die");
-                            mario.updateSize();
-                            mario.setY(mario.getY() - 20);
+                        if (!isRegretfulLose) {
+                            if (!mario.getFilePrefix().equals("s_mario_die")) {
+                                mario.setImgSize(1);
+                                mario.setFilePrefix("s_mario_die");
+                                mario.updateSize();
+                                mario.setY(mario.getY() - 20);
+                            }
                         }
                         mario.setY(mario.getY() + 7);
                         if(mario.getY() > WindowHeight){
@@ -1096,5 +1142,13 @@ public class GameWindow extends JFrame implements Runnable {
     }
     public void getGold(){
         goldCount++;
+    }
+
+    public boolean isRegretfulLose() {
+        return isRegretfulLose;
+    }
+
+    public void setRegretfulLose(boolean regretfulLose) {
+        isRegretfulLose = regretfulLose;
     }
 }
