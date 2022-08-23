@@ -1,5 +1,6 @@
 package com.zx.mario.domain;
 
+import com.zx.mario.manager.Application;
 import com.zx.mario.service.ImageFactory;
 
 import java.awt.*;
@@ -50,6 +51,9 @@ public class GameObject {
 //        System.out.println(width + ", " + height);
     }
 
+    public boolean inWindow(){
+        return x >= -width && x <= Application.WindowWidth && y >= -height && y <= Application.WindowHeight;
+    }
     public Image getImg(){
         if(imgSize == 1){
             return ImageFactory.getImg(filePrefix + ".png");

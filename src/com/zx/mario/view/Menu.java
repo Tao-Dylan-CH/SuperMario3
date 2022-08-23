@@ -210,6 +210,10 @@ public class Menu extends JFrame implements Runnable{
     private void startGame(){
 //        System.out.println("开始游戏");
 //        JOptionPane.showMessageDialog(this, "功能开发中，敬请期待");
+        Application.startGame = true;
+        Application.isPressA = false;
+        Application.isPressD = false;
+        Application.isPressK = false;
         GameWindow gameWindow = new GameWindow();
         this.setVisible(false);
         gameWindow.setVisible(true);
@@ -217,13 +221,36 @@ public class Menu extends JFrame implements Runnable{
             @Override
             public void windowClosing(WindowEvent e) {
                 Application.menu.setVisible(true);
+                Application.startGame = false;
+                new Thread(Application.menu).start();
+                if(Application.isSelectPlayBackgroundMusic){
+                    MusicService.closeBackGroundMusic();
+                    MusicService.playBackGroundMusic("menuSound.wav");
+                }
             }
         });
     }
     //继续游戏
     private void continueGame(){
 //        System.out.println("继续游戏");
-        JOptionPane.showMessageDialog(this, "没有存档，请开始游戏");
+        GameWindow gameWindow = Application.gameWindow;
+        if(gameWindow != null && !gameWindow.isGameEnd()){
+            this.setVisible(false);
+            Application.startGame = true;
+            Application.isPressA = false;
+            Application.isPressD = false;
+            Application.isPressK = false;
+            gameWindow.setVisible(true);
+            new Thread(Application.gameWindow).start();
+            //启动计时
+            gameWindow.startTheGameClock();
+            if(Application.isSelectPlayBackgroundMusic){
+                MusicService.closeBackGroundMusic();
+                MusicService.playBackGroundMusic("main_theme.wav");
+            }
+        } else{
+            JOptionPane.showMessageDialog(this, "没有存档，请开始游戏");
+        }
     }
     //游戏设置
     private void setting(){
@@ -234,7 +261,7 @@ public class Menu extends JFrame implements Runnable{
     //游戏帮助
     private void help(){
 //        System.out.println("游戏帮助");
-        MessageService.showGameHelpMessage(this, Application.language);
+        MessageService.showGameHelpMessage(this);
     }
     //手册
     private void handBook(){

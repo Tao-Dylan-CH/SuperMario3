@@ -1,5 +1,6 @@
 package com.zx.mario.service;
 
+import com.zx.mario.manager.Application;
 import com.zx.mario.utils.SoundUtil;
 
 /**
@@ -15,14 +16,23 @@ public class MusicService {
     }
     //暂停播放背景音乐
     public static void stopBackGroundMusic(){
-        SoundUtil.shutDownBackgroundMusic();
+        SoundUtil.stopBackgroundMusic();
     }
     //继续播放背景音乐
     public static void startBackGroundMusic(){
         SoundUtil.openBackgroundMusic();
     }
+    //关闭音乐播放
+    public static void closeBackGroundMusic(){
+        SoundUtil.closeBackgroundMusic();
+    }
     //播放音效
     public static void playSound(String filename){
         SoundUtil.playSound(filename);
+    }
+    //播放游戏音效
+    public static void playGameSound(String fileName){
+        if(Application.isSelectPlayGameSoundEffect)
+            playSound(fileName);
     }
 }

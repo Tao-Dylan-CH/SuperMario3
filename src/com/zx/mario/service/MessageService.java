@@ -1,5 +1,7 @@
 package com.zx.mario.service;
 
+import com.zx.mario.manager.Application;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -28,6 +30,8 @@ public class MessageService {
 
     static {
         properties = new Properties();
+        //加载配置文件
+        load(language);
     }
 
     /**
@@ -35,7 +39,7 @@ public class MessageService {
      * @param language 语言 0-中文 1-英文
      */
     private static void load(int language) {
-        if (language == 0) {
+        if (language == CHINESE) {
             try {
                 url = MessageService.class.getResource(path + "menu_CH.properties");
                 assert url != null;
@@ -62,8 +66,8 @@ public class MessageService {
      */
     public static String[] getMenuText(int language) {
         String[] result = new String[6];
-        //加载文件
-        load(language);
+//        //加载文件
+//        load(language);
         for (int i = 0; i < 6; i++) {
             result[i] = properties.getProperty("" + i);
         }
@@ -76,7 +80,7 @@ public class MessageService {
      * @return 组件文字
      */
     public static String getTextByLanguage(String key) {
-        load(language);
+//        load(language);
         return properties.getProperty(key);
     }
 
@@ -84,10 +88,9 @@ public class MessageService {
      * 在主菜单显示游戏帮助
      *
      * @param frame    父窗口
-     * @param language 语言
      * @see MessageService
      */
-    public static void showGameHelpMessage(JFrame frame, int language) {
+    public static void showGameHelpMessage(JFrame frame) {
         String message = MessageService.getTextByLanguage("help");
         ImageIcon helpIcon = ImageFactory.getIcon("help.png");
         JOptionPane.showMessageDialog(frame, message, getTextByLanguage("helpTitle"), JOptionPane.INFORMATION_MESSAGE, helpIcon);
@@ -210,6 +213,8 @@ public class MessageService {
                 }else{
                     language = CHINESE;
                 }
+                //语音更改加载
+                load(language);
                 dialog.setTitle(getTextByLanguage("settingTitle"));
                 musicLabel.setText(getTextByLanguage("settingMusicLabel"));
                 checkBox1.setText(getTextByLanguage("settingCheckBox1"));
@@ -251,5 +256,13 @@ public class MessageService {
 //            }
 //        });
 
+    }
+
+    public static void showWinMessageDialog(JFrame frame){
+        JOptionPane.showMessageDialog(frame, getTextByLanguage("winContent"), getTextByLanguage("winTitle"), JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void showLoseMessageDialog(JFrame frame){
+        JOptionPane.showMessageDialog(frame, getTextByLanguage("loseContent"), getTextByLanguage("loseTitle"), JOptionPane.INFORMATION_MESSAGE);
     }
 }

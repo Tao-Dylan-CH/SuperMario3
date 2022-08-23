@@ -28,6 +28,7 @@ public class SoundUtil {
         audioDao.load();
         audioDao.start();
     }
+
     /**
      * 背景音乐
      */
@@ -39,9 +40,14 @@ public class SoundUtil {
         backgroundMusic.loop();
         backgroundMusic.start();
     }
-    public static void shutDownBackgroundMusic(){
+    public static void stopBackgroundMusic(){
         if(backgroundMusic != null){
             backgroundMusic.stop();
+        }
+    }
+    public static void closeBackgroundMusic(){
+        if(backgroundMusic != null){
+            backgroundMusic.close();
         }
     }
     public static void openBackgroundMusic(){
@@ -51,11 +57,12 @@ public class SoundUtil {
     }
 
 
+    //不支持的音频格式，使用转换
 //    public static void main(String[] args) {
 ////        将MP3文件转为wav文件
-//        String fileName = "点击4";
-//        String filePath = "D:\\" + fileName + ".mp3";
-//        String targetPath = "D:\\" + fileName +".wav";
+//        String fileName = "优于吾者，不存于世";
+//        String filePath = "F:\\" + fileName + ".wav";
+//        String targetPath = "F:\\" + fileName +".wav";
 //        byteToWav(getBytes(filePath), targetPath);
 //    }
 
@@ -145,7 +152,9 @@ class AudioDao {
     public void stop() {
         clip.stop();//暂停音频播放
     }
-
+    public void close(){
+        clip.close();   //关闭
+    }
     public void start() {
         clip.start();//播放音频
     }

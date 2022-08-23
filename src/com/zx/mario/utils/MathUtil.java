@@ -1,9 +1,6 @@
 package com.zx.mario.utils;
 
-import com.zx.mario.domain.Enemy;
-import com.zx.mario.domain.GameObject;
-import com.zx.mario.domain.MushRoom;
-import com.zx.mario.domain.Obstacle;
+import com.zx.mario.domain.*;
 import com.zx.mario.manager.Application;
 
 import java.util.List;
@@ -95,6 +92,22 @@ public class MathUtil {
                     && obstacle.getX() + offset <= o.getX() + o.getWidth()
                     && obstacle.getX() + obstacle.getWidth() > o.getX() + offset){
 //                System.out.println("在障碍物上");
+                //可能有像素差，导致视觉上悬空，把物体放在障碍物上
+                o.setY(obstacle.getY() - o.getHeight());
+
+                //加入坑后的补丁
+                if(obstacle.getType() == ObstacleType.pit){
+                    if(o.getX() > obstacle.getX() && o.getX() + o.getWidth() < obstacle.getX() + obstacle.getWidth()){
+                        if(o instanceof Enemy){     //敌人
+                            Enemy enemy = (Enemy) o;
+                            enemy.fallOff();
+                        }else if(o instanceof MobileGainProp){  //增益
+                            MobileGainProp prop = (MobileGainProp) o;
+                            prop.fallOff();
+                        }
+                    }
+
+                }
                 return true;
             }
         }
@@ -141,8 +154,18 @@ public class MathUtil {
         boolean canRight = checkCanRight(obstacles, o);
 
         if (o.getX() >= -o.getWidth() && o.getX() <= Application.WindowWidth) {  //在窗口中出现
+
             if(!onObstacle && !o.onGrass()){
-                o.setY(o.getY() + o.getSpeed());
+                o.setY(o.getY() + o.getSpeed() * 2);
+                if(o.isToRight()){
+                    o.setX(o.getX() + o.getSpeed() / 2);
+                }else{
+                    o.setX(o.getX() - o.getSpeed() / 2);
+                }
+
+                //因为后面加上了坑
+                if(o.getY() + o.getHeight() > Application.gameGrassY)
+                    o.setY(Application.gameGrassY - o.getHeight());
             }else{
                 if(o.isToRight()){
                     if(canRight){

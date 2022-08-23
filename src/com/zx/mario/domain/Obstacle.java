@@ -2,7 +2,7 @@ package com.zx.mario.domain;
 
 import com.zx.mario.manager.Application;
 
-import static com.zx.mario.manager.Application.gameGrassY;
+
 
 /**
  * @author 挚爱之夕
@@ -15,10 +15,54 @@ public class Obstacle extends GameObject{
     private ObstacleType type;
     //切图片的频率
     public int updateFrequent = 3;
-    //判断问号方块是否有蘑菇
-    public boolean isMushroom = false;
+    //判断问号方块类型
+    private BoxType boxType;
+    //藏有多颗金币的普通方块
+
+    private int goldsCount = 9;
     public Obstacle(){
 
+    }
+    public static Obstacle newBoxInstance(int x, int y, BoxType boxType){
+        Obstacle obstacle = new Obstacle(x, y, 4, 0, "box", 0, ObstacleType.box);
+        obstacle.setBoxType(boxType);
+        return obstacle;
+    }
+    //可摧毁的砖块
+    public static Obstacle newBrick0Instance(int x, int y){
+        return new Obstacle(x, y, 1, 0, "brick0", 0, ObstacleType.brick0);
+    }
+    //不可摧毁的砖块
+    public static Obstacle newBrick1Instance(int x, int y){
+        return new Obstacle(x, y, 1, 0, "brick1", 0, ObstacleType.brick1);
+    }
+    //藏有金币的普通方块
+    public static Obstacle newGoldBrick0Instance(int x, int y){
+        return new Obstacle(x, y, 1, 0, "brick0", 0, ObstacleType.brick0ContainsGold);
+    }
+    //藏有星星的普通方块
+    public static Obstacle newStarBrick0Instance(int x, int y){
+        return new Obstacle(x, y, 1, 0, "brick0", 0, ObstacleType.brick0ContainsStar);
+    }
+    //水管
+    public static Obstacle newPieInstance(int x, int y){
+        return new Obstacle(x, y, 1, 0, "pipe", 0, ObstacleType.pipe);
+    }
+    //坑
+    public static Obstacle newPitInstance(int x, int y){
+        return new Obstacle(x, y, 1, 0, "pit", 0, ObstacleType.pit);
+    }
+    //旗帜
+    public static Obstacle newFlagInstance(int x, int y){
+        return new Obstacle(x, y, 1, 0, "flag", 0, ObstacleType.flag);
+    }
+    //旗杆
+    public static Obstacle newGanInstance(int x, int y){
+        return new Obstacle(x, y, 1, 0, "gan", 0, ObstacleType.gan);
+    }
+    //城堡
+    public static Obstacle newTowerInstance(int x, int y){
+        return new Obstacle(x, y, 1, 0, "tower", 0, ObstacleType.gan);
     }
     public Obstacle(int x, int y, int imgSize, int speed, String filePrefix, int currentImgIndex, ObstacleType type) {
         super(x, y, imgSize, speed, filePrefix, currentImgIndex);
@@ -27,13 +71,6 @@ public class Obstacle extends GameObject{
     public void update(int imgSize, String filePrefix, ObstacleType type){
         this.imgSize = imgSize;
         this.filePrefix = filePrefix;
-        this.type = type;
-    }
-    public ObstacleType getType() {
-        return type;
-    }
-
-    public void setType(ObstacleType type) {
         this.type = type;
     }
     @Override
@@ -74,4 +111,35 @@ public class Obstacle extends GameObject{
 //        }
     }
 
+    public int getUpdateFrequent() {
+        return updateFrequent;
+    }
+
+    public void setUpdateFrequent(int updateFrequent) {
+        this.updateFrequent = updateFrequent;
+    }
+
+    public BoxType getBoxType() {
+        return boxType;
+    }
+
+    public void setBoxType(BoxType boxType) {
+        this.boxType = boxType;
+    }
+
+    public ObstacleType getType() {
+        return type;
+    }
+
+    public void setType(ObstacleType type) {
+        this.type = type;
+    }
+
+    public int getGoldsCount() {
+        return goldsCount;
+    }
+
+    public void setGoldsCount(int goldsCount) {
+        this.goldsCount = goldsCount;
+    }
 }
