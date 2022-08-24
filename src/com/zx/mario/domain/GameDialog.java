@@ -38,7 +38,7 @@ public class GameDialog extends GameObject{
     }
 
     public static GameDialog newBeBiggestDialogInstanceForMario(){
-        return new GameDialog("dialog_biggest", normalDuration);
+        return new GameDialog("dialog_biggest", normalDuration * 2);
     }
 
     public static GameDialog newWinDialogInstanceForMario(){

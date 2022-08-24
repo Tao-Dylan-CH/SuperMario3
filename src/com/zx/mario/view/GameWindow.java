@@ -834,6 +834,8 @@ public class GameWindow extends JFrame implements Runnable {
                             }else{
                                 score += beatEnemy;
                             }
+                            //音效
+                            MusicService.playGameSound("stomp.wav");
                         }
                     }
                 }
@@ -950,6 +952,8 @@ public class GameWindow extends JFrame implements Runnable {
                             mario.update();
 //                            System.out.println(mario.getX());
                             if(mario.getX() > gan.getX() + 235){
+                                //播放音效
+                                MusicService.playGameSound("stage_clear.wav");
                                 MessageService.showWinMessageDialog(this);
                                 isEndAnimationFinished = true;
                             }
@@ -965,6 +969,8 @@ public class GameWindow extends JFrame implements Runnable {
                         }
                         mario.setY(mario.getY() + 7);
                         if(mario.getY() > WindowHeight){
+                            //音效
+                            MusicService.playGameSound("death.wav");
                             MessageService.showLoseMessageDialog(this);
                             isEndAnimationFinished = true;
                         }

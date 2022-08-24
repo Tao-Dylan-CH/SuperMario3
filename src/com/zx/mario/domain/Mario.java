@@ -569,6 +569,8 @@ public class Mario extends GameObject {
         int ganX = gameWindow.getGan().getX();
         if(x + width >= ganX + 15){
             win();
+            //音效
+            MusicService.playGameSound("flagpole.wav");
         }
 
     }

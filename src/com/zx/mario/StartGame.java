@@ -12,6 +12,5 @@ import com.zx.mario.view.Menu;
 public class StartGame {
     public static void main(String[] args) {
         Menu menu = new Menu();
-//        System.out.println("jjj");
     }
 }

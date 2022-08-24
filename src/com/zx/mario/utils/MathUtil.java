@@ -2,7 +2,9 @@ package com.zx.mario.utils;
 
 import com.zx.mario.domain.*;
 import com.zx.mario.manager.Application;
+import com.zx.mario.service.MusicService;
 
+import javax.crypto.MacSpi;
 import java.util.List;
 import java.util.Random;
 
@@ -170,13 +172,27 @@ public class MathUtil {
                 if(o.isToRight()){
                     if(canRight){
                         o.setX(o.getX() + o.getSpeed());
-                    }else{
+                    }else{  //改变方向
+                        //音效
+                        if(o instanceof Enemy){
+                            Enemy enemy = (Enemy) o;
+                            if(enemy.isShell){
+                                MusicService.playGameSound("stomp.wav");
+                            }
+                        }
                         o.setToRight(false);
                     }
                 }else{
                     if(canLeft){
                         o.setX(o.getX() - o.getSpeed());
                     }else{
+                        //音效
+                        if(o instanceof Enemy){
+                            Enemy enemy = (Enemy) o;
+                            if(enemy.isShell){
+                                MusicService.playGameSound("stomp.wav");
+                            }
+                        }
                         o.setToRight(true);
                     }
                 }
