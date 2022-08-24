@@ -115,7 +115,7 @@ public class Application {
     //分数
     public static final int treadScore = 100;
     public static final int beatEnemy = 100;
-    public static final int tortoise = 400;
+    public static final int tortoise = 500;
     public static final int getGainScore = 1000;
     public static final int getGoldScore = 200;
 }

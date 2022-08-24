@@ -5,6 +5,8 @@ import com.zx.mario.utils.ImageUtil;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ public class ImageFactory {
     static {
         imageIconMap = new HashMap<>();
         imageMap = new HashMap<>();
-        init();
+//        init();       //jar包下不能通过File 获取目录下的文件名
     }
     public static void init(){
 //        //BufferedImag
@@ -39,9 +41,13 @@ public class ImageFactory {
         URL url = Object.class.getResource(path);
         assert url != null;
         File file = null;
+        //得到目录对象
         try {
-            //得到目录对象
-            file = new File(url.toURI());
+            URI uri = url.toURI();
+//            file = new File(uri);   //运行jar 报错
+            String pathStr = url.getPath();
+            System.out.println("path:  " + pathStr);
+            file = new File(pathStr);
             if(file.isDirectory()){
                 //遍历目录下的文件
                 File[] files = file.listFiles();
@@ -62,11 +68,26 @@ public class ImageFactory {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+
     }
+//    public static ImageIcon getIcon(String name){
+//        return imageIconMap.get(name);
+//    }
+//    public static BufferedImage getImg(String name){
+//        return imageMap.get(name);
+//    }
+
+    //动态加载
     public static ImageIcon getIcon(String name){
+        if(imageIconMap.get(name) == null){
+            imageIconMap.put(name, ImageUtil.getIcon(name));
+        }
         return imageIconMap.get(name);
     }
     public static BufferedImage getImg(String name){
+        if(imageMap.get(name) == null){
+            imageMap.put(name, ImageUtil.getImage(name));
+        }
         return imageMap.get(name);
     }
 }

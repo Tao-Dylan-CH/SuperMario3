@@ -57,13 +57,15 @@ public class GameWindow extends JFrame implements Runnable {
     private int goldCount = 0;
     //判断是否是因为踩空死亡
     private boolean isRegretfulLose = false;
+    //用于显示得分动画
+    private List<ScoreProp> scoreProps;
     public GameWindow() {
         //标题
         this.setTitle(MessageService.getTextByLanguage("menuTitle"));
-        this.setIconImage(ImageFactory.getImg("menuIcon"));
+        this.setIconImage(ImageFactory.getImg("menuIcon.png"));
         //窗口大小
         this.setSize(Application.WindowWidth, Application.WindowHeight);
-//        this.setResizable(false);
+        this.setResizable(false);
         //默认关闭行为
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //布局
@@ -285,6 +287,7 @@ public class GameWindow extends JFrame implements Runnable {
         specialProps = new Vector<>();
         gainProps = new Vector<>();
         heroBullets = new Vector<>();
+        scoreProps = new Vector<>();
         //云
         cloud = new BackGround(0, 26, 1, "gameCloud");
         //山
@@ -635,6 +638,14 @@ public class GameWindow extends JFrame implements Runnable {
             if(bullet.inWindow())
                 graphics.drawImage(bullet.getImg() ,bullet.getX(), bullet.getY(), this);
         }
+        graphics.setFont(new Font("楷书", Font.BOLD, 20));
+        graphics.setColor(Color.white);
+        //得分动画
+        for(ScoreProp scoreProp : scoreProps){
+            if(!scoreProp.isInvalid()){
+                graphics.drawString(scoreProp.getScore() + "", scoreProp.getX(), scoreProp.getY());
+            }
+        }
     }
 
     /**
@@ -745,6 +756,14 @@ public class GameWindow extends JFrame implements Runnable {
 //                System.out.println("移除失效黑粒子...");
             }
         }
+        /*得分动画*/
+        for(int i = 0; i < scoreProps.size(); i++){
+            ScoreProp scoreProp = scoreProps.get(i);
+            scoreProp.update();
+            if(scoreProp.isInvalid()){
+                scoreProps.remove(scoreProp);
+            }
+        }
     }
     public void sceneMove(){
         //马里奥不能向右，则地图不能移动
@@ -831,8 +850,10 @@ public class GameWindow extends JFrame implements Runnable {
                             enemy1.die();
                             if(enemy1.getType() == EnemyType.tortoise){
                                 score += beatEnemy * 2;
+                                addScoreProp(ScoreProp.newScorePropInstance(enemy1.getX(), enemy1.getY(), beatEnemy * 2));
                             }else{
                                 score += beatEnemy;
+                                addScoreProp(ScoreProp.newScorePropInstance(enemy1.getX(), enemy1.getY(), beatEnemy));
                             }
                             //音效
                             MusicService.playGameSound("stomp.wav");
@@ -1060,15 +1081,8 @@ public class GameWindow extends JFrame implements Runnable {
         if(dialogForMario != null){
             graphics.drawImage(dialogForMario.getImg(), mario.getX() - 22, mario.getY() - 40, this);
         }
-//        //无敌提示
-//        if(mario.isInvincible()){
-//            graphics.drawImage(ImageFactory.getImg("dialog_invincible"), mario.getX(), mario.getY(), this);
-//        }
-//        //死亡对话
-//        if(mario.getFilePrefix().equals("s_mario_die")){
-//        }
-//        graphics.drawImage(ImageFactory.getImg("dialog_die.png"), mario.getX() - 22, mario.getY() - 40, this);
-//        //胜利对话
+
+
 
         //一次展现在窗口
         g.drawImage(bufferedImage, 0, 0, this);
@@ -1156,5 +1170,9 @@ public class GameWindow extends JFrame implements Runnable {
 
     public void setRegretfulLose(boolean regretfulLose) {
         isRegretfulLose = regretfulLose;
+    }
+
+    public void addScoreProp(ScoreProp scoreProp){
+        scoreProps.add(scoreProp);
     }
 }

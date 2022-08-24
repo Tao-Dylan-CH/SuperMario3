@@ -17,9 +17,6 @@ public class ImageUtil {
     //获取图片
     public static BufferedImage getImage(String fileName){
         URL url = ImageUtil.class.getResource(path + fileName);
-//        if(url == null){
-//            return null;
-//        }
         if(url == null){
             throw new RuntimeException("文件加载失败！");
         }

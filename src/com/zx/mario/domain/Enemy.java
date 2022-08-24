@@ -28,6 +28,8 @@ public class Enemy extends GameObject {
     private boolean isDown = false;
     //食人花上下判断
     public int  displacement = 0;
+    //乌龟计分控制
+    public boolean isCalculated = false;
     public Enemy() {
     }
     public Enemy(int x, int y, int imgSize, int speed, String filePrefix, int currentImgIndex, EnemyType type) {

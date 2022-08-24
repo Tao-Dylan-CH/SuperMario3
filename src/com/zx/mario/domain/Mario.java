@@ -670,6 +670,7 @@ public class Mario extends GameObject {
                         //得分
                         gameWindow.getScore(getGoldScore);
                         gameWindow.getGold();
+                        gameWindow.addScoreProp(ScoreProp.newScorePropInstance(obstacle.getX(), obstacle.getY(), getGoldScore));
                     }else{
                         obstacle.setType(ObstacleType.brick0);
                     }
@@ -703,6 +704,7 @@ public class Mario extends GameObject {
                         //得分
                         gameWindow.getScore(getGoldScore);
                         gameWindow.getGold();
+                        gameWindow.addScoreProp(ScoreProp.newScorePropInstance(obstacle.getX(), obstacle.getY(), getGoldScore));
                     }
                 }else if(obstacle.getType() == ObstacleType.hiddenBrick){
                     //更改状态
@@ -767,6 +769,8 @@ public class Mario extends GameObject {
                     }
                     //得分
                     gameWindow.getScore(getGainScore);
+                    gameWindow.addScoreProp(ScoreProp.newScorePropInstance(obstacle.getX(), obstacle.getY(), getGainScore));
+
                 }
 
             }else{  //向日葵
@@ -789,8 +793,11 @@ public class Mario extends GameObject {
                     }
                     //得分
                     gameWindow.getScore(getGainScore);
+                    gameWindow.addScoreProp(ScoreProp.newScorePropInstance(obstacle.getX(), obstacle.getY(), getGainScore));
+
                 }
             }
+
         }
     }
     public void beAttacked(){
@@ -831,6 +838,11 @@ public class Mario extends GameObject {
                     && enemy.getX() + enemy.getWidth() > x + offset) {
 
                 if (enemy.getType() == EnemyType.fungus) {
+                    //得分
+                    if(enemy.getType() != EnemyType.flower){
+                        gameWindow.getScore(treadScore);
+                        gameWindow.addScoreProp(ScoreProp.newScorePropInstance(enemy.getX(), enemy.getY(), treadScore));
+                    }
                     //播放音效
                     MusicService.playGameSound("stomp.wav");
                     setUpTime(3);
@@ -862,29 +874,42 @@ public class Mario extends GameObject {
                         beAttacked();
                     }
                 }
-                //得分
-                if(enemy.getType() != EnemyType.flower){
-                    gameWindow.getScore(treadScore);
-                }
             } else if (MathUtil.checkTheCollision(this, enemy)) {   //撞到敌人
                 if(isHarmEnemyStatus){
 //                    System.out.println("无敌状态!");
                     enemy.die();
-                }else if(!isInvincible){
-                    if(enemy.getType() == EnemyType.tortoise){
-                        if(enemy.isShell){
-//                            System.out.println("龟壳！");
-                            enemy.setSpeed(10);
-                            //不再变乌龟
-                            enemy.setDuration(Integer.MAX_VALUE);
-                            enemy.setToRight(x <= enemy.getX());
+                }else{
+                    if(isInvincible){   //不受伤害的状态
+                        if(enemy.getType() == EnemyType.tortoise){
+                            if(enemy.isShell){
+                                enemy.setSpeed(10);
+                                //不再变乌龟
+                                enemy.setDuration(Integer.MAX_VALUE);
+                                enemy.setToRight(x <= enemy.getX());
+                            }
+                        }
+                    }else{
+                        if(enemy.getType() == EnemyType.tortoise){
+                            if(enemy.isShell){
+                                enemy.setSpeed(10);
+                                //不再变乌龟
+                                enemy.setDuration(Integer.MAX_VALUE);
+                                enemy.setToRight(x <= enemy.getX());
+                                //得分
+                                if(!enemy.isCalculated){
+                                    gameWindow.getScore(tortoise);
+                                    gameWindow.addScoreProp(ScoreProp.newScorePropInstance(enemy.getX(), enemy.getY(), tortoise));
+                                    enemy.isCalculated = true;
+                                }
+                                }else{
+                                beAttacked();
+                            }
                         }else{
                             beAttacked();
                         }
-                    }else{
-                        beAttacked();
                     }
                 }
+
 
             }
         }
