@@ -816,8 +816,10 @@ public class GameWindow extends JFrame implements Runnable {
                     //分数
                     if(enemy.getType() == EnemyType.tortoise){
                         score += beatEnemy * 2;
+                        scoreProps.add(ScoreProp.newScorePropInstance(enemy.getX(), enemy.getY(), beatEnemy * 2));
                     }else{
                         score += beatEnemy;
+                        scoreProps.add(ScoreProp.newScorePropInstance(enemy.getX(), enemy.getY(), beatEnemy));
                     }
                 }
             }
