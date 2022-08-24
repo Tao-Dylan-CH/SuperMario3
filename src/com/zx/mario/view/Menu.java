@@ -39,7 +39,7 @@ public class Menu extends JFrame implements Runnable{
         this.setTitle(MessageService.getTextByLanguage("menuTitle"));
         this.setIconImage(ImageFactory.getImg("menuIcon.png"));
         //窗口大小
-        this.setSize(800, 600);
+        this.setSize(Application.WindowWidth, Application.WindowHeight);
         this.setResizable(false);
         //默认关闭行为
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
